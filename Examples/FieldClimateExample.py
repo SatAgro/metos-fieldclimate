@@ -1,12 +1,20 @@
-__author__ = 'kstopa'
+__author__ = "Krzysztof Stopa"
+__copyright__ = "Copyright 2015 SatAgro"
+__credits__ = ["Krzysztof Stopa", "Przemyslaw Zelazowski"]
+__license__ = "LGPL"
+__email__ = "buiro@satagro.pl"
+
+import sys
 
 from FieldClimate import RestAPI
 from FieldClimate.Data import Station
 
+
 if __name__ == '__main__':
     # Simple test and usage example.
-
-    fc = RestAPI.FieldClimateRestAPI('lukaszkrechowiecki', 'cebulatfg')
+    USER = sys.argv[1]
+    PASS = sys.argv[2]
+    fc = RestAPI.FieldClimateRestAPI(USER, PASS)
     st = fc.get_stations()
     print(st)
 
