@@ -71,7 +71,19 @@ class FieldClimateRestAPI(RestAPI):
 
         return self.call_api_method('CIDIStationData/GetFirst', params)['ReturnDataSet']
 
-    def get_station_data_next(self, station_name, rows=100, show_user_units=False, dt_from=datetime.now()):
+    def get_station_data_next(self, station_name, rows=100, show_user_units=False, dt_to=datetime.now()):
+        params = {
+            'user_name': self.USER,
+            'user_passw': self.PASS,
+            'station_name': station_name,
+            'row_count': rows,
+            'dt_from': dt_to.strftime('%Y-%m-%d %H:%M:%S'),
+            'show_user_units': int(show_user_units)
+        }
+
+        return self.call_api_method('CIDIStationData/GetNext', params)['ReturnDataSet']
+
+    def get_station_data_from_date(self, station_name, rows=100, show_user_units=False, dt_from=datetime.now()):
         params = {
             'user_name': self.USER,
             'user_passw': self.PASS,
@@ -81,7 +93,7 @@ class FieldClimateRestAPI(RestAPI):
             'show_user_units': int(show_user_units)
         }
 
-        return self.call_api_method('CIDIStationData/GetNext', params)['ReturnDataSet']
+        return self.call_api_method('CIDIStationData/GetFromDate', params)['ReturnDataSet']
 
     def get_station_data_available_dates(self, station_name):
         params = {
@@ -102,7 +114,9 @@ class FieldClimateRestAPI(RestAPI):
         dt_down = dt_min
         while dt_down < dt_max:
             print('Getting data from {0}'.format(dt_down.strftime('%Y-%m-%d %H:%M:%S')))
-            ms = self.get_station_data_next(station_name, dt_from=dt_down)
+            ms = self.get_station_data_from_date(station_name, dt_from=dt_down)
+            if not dt_min == dt_down:
+                ms.pop(0)   # Pop first element due to it is te last of previous call.
             measures.append(ms)
             dt_down = datetime.strptime(ms[-1]['f_date'], '%Y-%m-%d %H:%M:%S')
 
