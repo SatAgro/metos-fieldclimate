@@ -20,8 +20,8 @@ if __name__ == '__main__':
 
     dates = fc.get_station_data_available_dates(st[0]['f_name'])
 
-    mss = fc.get_station_all_data(st[0]['f_name'])
-    print(mss)
+    #mss = fc.get_station_all_data(st[0]['f_name'])
+    #print(mss)
 
     print(dates)
 
@@ -40,6 +40,8 @@ if __name__ == '__main__':
     temp_sensor_1 = station.get_sensor('HC Air temperature')
 
     all_measures = station.get_sensors_measures([precip_sensor, temp_sensor_0, temp_sensor_1])
+
+    station.to_csv('test.csv', station.get_sensors())
 
     for pm in all_measures:
         print pm
