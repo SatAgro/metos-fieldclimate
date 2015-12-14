@@ -61,7 +61,7 @@ class Station():
         return measures
 
     def get_sensors_measures_header(self, sensors):
-        header = ['f_date']
+        header = ['Date']
         for s in sensors:
             for mode in s.get_modes():
                 header.append(s.get_name() + '_' + s.get_measure_id(mode))
