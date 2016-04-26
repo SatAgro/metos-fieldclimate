@@ -10,6 +10,7 @@ import json
 
 from datetime import datetime
 
+
 class RestAPI():
 
     APIURL = None
@@ -104,23 +105,29 @@ class FieldClimateRestAPI(RestAPI):
 
         return self.call_api_method('CIDIStationData/GetMinMaxDate', params)['ReturnDataSet']
 
-    def get_station_all_data(self, station_name, rows=100, show_user_units=False):
+    def get_station_data_between_dates(self, station_name, date_min, date_max=datetime.now()):
         measures = []
         # Get min and max dates and get data each 100 rows.
-        dts = self.get_station_data_available_dates(station_name)
-        dt_min = datetime.strptime(dts['f_date_min'], '%Y-%m-%d %H:%M:%S')
-        dt_max = datetime.strptime(dts['f_date_max'], '%Y-%m-%d %H:%M:%S')
-        print('Data available from {0} to {1}'.format(dt_min.strftime('%Y-%m-%d %H:%M:%S'), dt_min.strftime('%Y-%m-%d %H:%M:%S')))
-        dt_down = dt_min
-        while dt_down < dt_max:
-            print('Getting data from {0}'.format(dt_down.strftime('%Y-%m-%d %H:%M:%S')))
-            ms = self.get_station_data_from_date(station_name, dt_from=dt_down)
-            if not dt_min == dt_down:
+        print('Getting data from {0} to {1}'.format(date_min.strftime('%Y-%m-%d %H:%M:%S'), date_max.strftime('%Y-%m-%d %H:%M:%S')))
+        date_down = date_min
+        while date_down < date_max:
+            print('Getting data from {0}'.format(date_down.strftime('%Y-%m-%d %H:%M:%S')))
+            ms = self.get_station_data_from_date(station_name, dt_from=date_down)
+            if not date_min == date_down:
                 ms.pop(0)   # Pop first element due to it is te last of previous call.
-            measures.append(ms)
-            dt_down = datetime.strptime(ms[-1]['f_date'], '%Y-%m-%d %H:%M:%S')
-
+            for m in ms:
+                if date_max > datetime.strptime(m['f_date'], '%Y-%m-%d %H:%M:%S'):
+                    measures.append(m)
+            date_down = datetime.strptime(ms[-1]['f_date'], '%Y-%m-%d %H:%M:%S')
         return measures
+
+    def get_station_all_data(self, station_name):
+        measures = []
+        # Get min and max dates and get data each 100 rows.
+        dates = self.get_station_data_available_dates(station_name)
+        date_min = datetime.strptime(dates['f_date_min'], '%Y-%m-%d %H:%M:%S')
+        date_max = datetime.strptime(dates['f_date_max'], '%Y-%m-%d %H:%M:%S')
+        return self.get_station_data_between_dates(station_name, date_min, date_max)
 
     def get_station_sensors(self, station_name):
         params = {

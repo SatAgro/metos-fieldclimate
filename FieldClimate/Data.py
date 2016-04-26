@@ -5,12 +5,13 @@ __license__ = "LGPL"
 __email__ = "buiro@satagro.pl"
 
 from datetime import datetime
+from enum import Enum
 import csv
 
 __author__ = 'kstopa'
 
-class Station():
 
+class Station():
     props = None
     sensors = None
     measures = None
@@ -20,8 +21,14 @@ class Station():
         self.sensors = sensors
         self.measures = measures
 
+    def get_uid(self):
+        return self.props['f_uid']
+
     def get_name(self):
         return self.props['f_name']
+
+    def get_name_user(self):
+        return  self.props['f_user_station_name']
 
     def get_user_name(self):
         if self.props['f_user_name'] is not None:
@@ -32,10 +39,10 @@ class Station():
             return None
 
     def get_latitude(self):
-        return self.props['f_latitude']
+        return float(self.props['f_latitude'])
 
     def get_longitude(self):
-        return self.props['f_longitude']
+        return float(self.props['f_longitude'])
 
     def get_sensor(self, sensor_name):
         for s in self.sensors:
@@ -50,15 +57,14 @@ class Station():
         return sensors
 
     def get_sensors_measures(self, sensors):
-        measures = []
+        mss = []
         for m in self.measures:
             sm = Measure(m['f_date'])
             for s in sensors:
                 for mode in s.get_modes():
-                    sm.add_value(m[s.get_measure_id(mode)])
-
-            measures.append(sm)
-        return measures
+                    sm.add_value(s, mode, m[s.get_measure_id(mode)])
+            mss.append(sm)
+        return mss
 
     def get_sensors_measures_header(self, sensors):
         header = ['Date']
@@ -66,6 +72,27 @@ class Station():
             for mode in s.get_modes():
                 header.append(s.get_name() + '_' + s.get_measure_id(mode))
         return header
+
+    def to_synop(self, sid=None):
+        """
+        Get station measures in SYNOP format. @see http://weather.unisys.com/wxp/Appendices/Formats/SYNOP.html
+        Note that by now only supports temperature and precipitation measures. Other field will be empty
+        :param sid: Station id for this station.
+        :return:
+        """
+        if not sid:
+            sid = self.get_uid()
+        rows = []
+        # Get temperature and precipitation sensors.
+        precip_sensor = self.get_sensor('Precipitation')
+        temp_sensor = self.get_sensor('Air temperature')
+        if temp_sensor is None:
+            temp_sensor = self.get_sensor('HC Air temperature')
+
+        measures = self.get_sensors_measures([temp_sensor, precip_sensor])
+        for m in measures:
+            pass
+
 
     def to_csv(self, csv_path, sensors, delimiter=';'):
         with open(csv_path, 'wb') as csv_file:
@@ -75,6 +102,16 @@ class Station():
             st_data.writerow(header)
             for m in measures:
                 st_data.writerow([m.date] + m.values)
+
+
+class SensorMode(Enum):
+    MODE_MIN = "min"
+    MODE_MAX = "max"
+    MODE_AVE = "aver"
+    MODE_SUM = "sum"
+
+    def __str__(self):
+        return self.value
 
 
 class Sensor():
@@ -95,7 +132,7 @@ class Sensor():
 
     def get_measure_id(self, mode):
         """  Get code to access to a sensor average measure
-        :param type: measure type (aver|min|max)
+        :param mode: measure type (aver|min|max|sum)
         :return: sens_type_code_channel
         """
         return 'sens_{0}_{1}_{2}'.format(mode, self.get_channel(), self.get_code())
@@ -103,13 +140,13 @@ class Sensor():
     def get_modes(self):
         modes = []
         if int(self.props['f_val_sum']) == 1:
-            modes.append('sum')
+            modes.append(SensorMode.MODE_SUM)
         if int(self.props['f_val_aver']) == 1:
-            modes.append('aver')
+            modes.append(SensorMode.MODE_AVE)
         if int(self.props['f_val_min']) == 1:
-            modes.append('min')
+            modes.append(SensorMode.MODE_MIN)
         if int(self.props['f_val_max']) == 1:
-            modes.append('max')
+            modes.append(SensorMode.MODE_MAX)
         return modes
 
     def get_name(self):
@@ -118,20 +155,44 @@ class Sensor():
     def get_units(self):
         return self.props['f_units']
 
+    def __str__(self):
+        return self.get_name()
+
+    def __unicode__(self):
+        return self.get_name()
+
 
 class Measure():
     date = None
-    values = []
+    data = {}
 
     def __init__(self, date_txt):
-        self.values = []
+        self.data = {}
         self.date = datetime.strptime(date_txt, "%Y-%m-%d %H:%M:%S")
 
-    def add_value(self, value):
-        self.values.append(value)
+    def add_value(self, sensor, mode, value):
+        if sensor not in self.data:
+            self.data[sensor] = {}
+        self.data[sensor][mode] = round(float(value), 2)
+
+    def get_values(self):
+        values = []
+        for s in self.data:
+            for m in self.data[s]:
+                values.append(self.data[s][m])
+        return values
+
+    def get_value(self, sensor, mode):
+        if sensor in self.data:
+            if mode in self.data[sensor]:
+                return self.data[sensor][mode]
+            else:
+                return None
+        else:
+            return None
 
     def __str__(self):
         str = self.date.strftime("%Y-%m-%d %H:%M:%S")
-        for v in self.values:
+        for v in self.get_values():
             str += ';{0}'.format(v)
         return str
