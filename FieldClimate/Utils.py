@@ -28,13 +28,13 @@ def get_station_data_date(user, password, station_name, date=datetime.now()):
             d_min = date.replace(hour=0, minute=0, second=0)
             d_max = date.replace(hour=23, minute=59, second=59)
             measures = fc.get_station_data_between_dates(s['f_name'], d_min, d_max)
-            sensors = fc.get_station_sensors(station_name)
+            sensors = fc.get_station_sensors_statuses(station_name, d_min, d_max)
             station = Station(s, sensors, measures)
     # Process data: average temperature and cumulative precipitations
     if station:
         precip_sensor = station.get_sensor('Precipitation')
         temp_sensor = station.get_sensor('Air temperature')
-        if temp_sensor is None:
+        if temp_sensor is None or temp_sensor.get_status() is False:
             temp_sensor = station.get_sensor('HC Air temperature')
         temp_precip = station.get_sensors_measures([temp_sensor, precip_sensor])
         date_data = {'precipitation': get_sensor_sum(precip_sensor, temp_precip),
@@ -78,4 +78,5 @@ def get_sensor_max(sensor_name, measures, mode=SensorMode.MODE_MAX):
 if __name__ == '__main__':
     USER = sys.argv[1]
     PASS = sys.argv[2]
-    get_station_data_date(USER, PASS, '00000EE1', datetime.now() - timedelta(days=1))
+    data = get_station_data_date(USER, PASS, '0000027F', datetime.now() - timedelta(days=1))
+    print data

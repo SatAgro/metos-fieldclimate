@@ -111,7 +111,6 @@ class FieldClimateRestAPI(RestAPI):
         print('Getting data from {0} to {1}'.format(date_min.strftime('%Y-%m-%d %H:%M:%S'), date_max.strftime('%Y-%m-%d %H:%M:%S')))
         date_down = date_min
         while date_down < date_max:
-            print('Getting data from {0}'.format(date_down.strftime('%Y-%m-%d %H:%M:%S')))
             ms = self.get_station_data_from_date(station_name, dt_from=date_down)
             if not date_min == date_down:
                 ms.pop(0)   # Pop first element due to it is te last of previous call.
@@ -138,5 +137,14 @@ class FieldClimateRestAPI(RestAPI):
 
         return self.call_api_method('CIDIStationSensors/Get', params)['ReturnDataSet']
 
+    def get_station_sensors_statuses(self, station_name, dt_from, dt_to=datetime.now()):
+        params = {
+            'user_name': self.USER,
+            'user_passw': self.PASS,
+            'station_name': station_name,
+            'dt_from': dt_from.strftime('%Y-%m-%d'),
+            'dt_to':  dt_to.strftime('%Y-%m-%d')
+        }
 
+        return self.call_api_method('CIDIStationSensors/GetSensorsStatuses', params)['ReturnDataSet']
 

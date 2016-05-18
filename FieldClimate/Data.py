@@ -28,7 +28,7 @@ class Station():
         return self.props['f_name']
 
     def get_name_user(self):
-        return  self.props['f_user_station_name']
+        return self.props['f_user_station_name']
 
     def get_user_name(self):
         if self.props['f_user_name'] is not None:
@@ -72,27 +72,6 @@ class Station():
             for mode in s.get_modes():
                 header.append(s.get_name() + '_' + s.get_measure_id(mode))
         return header
-
-    def to_synop(self, sid=None):
-        """
-        Get station measures in SYNOP format. @see http://weather.unisys.com/wxp/Appendices/Formats/SYNOP.html
-        Note that by now only supports temperature and precipitation measures. Other field will be empty
-        :param sid: Station id for this station.
-        :return:
-        """
-        if not sid:
-            sid = self.get_uid()
-        rows = []
-        # Get temperature and precipitation sensors.
-        precip_sensor = self.get_sensor('Precipitation')
-        temp_sensor = self.get_sensor('Air temperature')
-        if temp_sensor is None:
-            temp_sensor = self.get_sensor('HC Air temperature')
-
-        measures = self.get_sensors_measures([temp_sensor, precip_sensor])
-        for m in measures:
-            pass
-
 
     def to_csv(self, csv_path, sensors, delimiter=';'):
         with open(csv_path, 'wb') as csv_file:
@@ -154,6 +133,18 @@ class Sensor():
 
     def get_units(self):
         return self.props['f_units']
+
+    def get_status(self):
+        """
+        Get the status of the station. In order to have this data you must to load station sensor information with
+        get_station_sensor_statuses from RestAPI.
+        :return: True or false. If no status information has been loaded by defualt true.
+        """
+        if 'f_sensor_status' in self.props:
+            print(self.props['f_sensor_status'])
+            return bool(self.props['f_sensor_status'])
+        else:
+            return True
 
     def __str__(self):
         return self.get_name()
