@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Python library to work with Metos FieldClimate meteorological stations JSON REST API. See [official documentation](http://example.com/ "Metos FieldClimtae") for more information.
+Python library to work with Metos FieldClimate meteorological stations JSON REST API. See [official documentation](http://www.fieldclimate.com/json_manual/json_manual.htm "Metos FieldClimte API documentation") for more information.
 
 ## Installation
 

@@ -8,12 +8,12 @@ import sys
 
 def get_station_data_date(user, password, station_name, date=datetime.now()):
     """
-
-    :param user:
-    :param passwd:
-    :param station:
-    :param date:
-    :return:
+    Get station cumulative precipitation and aver, max, min temperatures for given day date.
+    :param user: user name credentials
+    :param password: users password
+    :param station_name: Station name at the system
+    :param date: Date
+    :return: dictionary with { 'precipitation' : X, 'temperature' : { 'aver' : XX, 'min' : XX, 'max' : XX } } values.
     """
     fc = FieldClimateRestAPI(user, password)
     # Check stations
@@ -39,16 +39,30 @@ def get_station_data_date(user, password, station_name, date=datetime.now()):
         temp_precip = station.get_sensors_measures([temp_sensor, precip_sensor])
         date_data = {'precipitation': get_sensor_sum(precip_sensor, temp_precip),
                      'temperature': {'aver': get_sensor_average(temp_sensor, temp_precip),
-                                    'min': get_sensor_min(temp_sensor, temp_precip),
-                                    'max': get_sensor_max(temp_sensor, temp_precip)}
+                                     'min': get_sensor_min(temp_sensor, temp_precip),
+                                     'max': get_sensor_max(temp_sensor, temp_precip)}
         }
         return date_data
     else:
         print "No station found!"
         return None
 
+
+def get_station_date_min(user, password, station_name):
+    """ Get min date with available data on a station
+    :param user: User name credentials
+    :param password: Users password
+    :param station_name: Station name
+    :return: datetime
+    """
+    fc = FieldClimateRestAPI(user, password)
+    dates = fc.get_station_data_available_dates(station_name)
+    return datetime.strptime(dates['f_date_min'], '%Y-%m-%d %H:%M:%S')
+
+
 def get_sensor_average(sensor_name, measures, mode=SensorMode.MODE_AVE):
     return round(get_sensor_sum(sensor_name, measures, mode)/ len(measures), 4)
+
 
 def get_sensor_sum(sensor_name, measures, mode=SensorMode.MODE_SUM):
     m_sum = 0
@@ -78,5 +92,7 @@ def get_sensor_max(sensor_name, measures, mode=SensorMode.MODE_MAX):
 if __name__ == '__main__':
     USER = sys.argv[1]
     PASS = sys.argv[2]
-    data = get_station_data_date(USER, PASS, '0000027F', datetime.now() - timedelta(days=1))
+    start = get_station_date_min(USER, PASS, '00002E06')
+    print(start)
+    data = get_station_data_date(USER, PASS, '00002E06', datetime.now() - timedelta(days=1))
     print data
