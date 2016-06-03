@@ -37,6 +37,9 @@ def get_station_data_date(user, password, station_name, date=datetime.now()):
         if temp_sensor is None or temp_sensor.get_status() is False:
             temp_sensor = station.get_sensor('HC Air temperature')
         temp_precip = station.get_sensors_measures([temp_sensor, precip_sensor])
+        if not temp_precip:
+            print "Missing data!"
+            return None
         date_data = {'precipitation': get_sensor_sum(precip_sensor, temp_precip),
                      'temperature': {'aver': get_sensor_average(temp_sensor, temp_precip),
                                      'min': get_sensor_min(temp_sensor, temp_precip),
