@@ -44,6 +44,6 @@ if __name__ == '__main__':
     station.to_csv('test.csv', station.get_sensors())
 
     for pm in all_measures:
-        print pm
+        print(pm)
 
 
