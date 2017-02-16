@@ -19,7 +19,7 @@ except ImportError:
     from urllib.parse import urlencode
     from urllib.request import urlopen
 
-class RestAPI():
+class RestAPI(object):
 
     API_URL = None
 

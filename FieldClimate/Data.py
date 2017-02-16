@@ -11,7 +11,7 @@ from datetime import datetime
 from enum import Enum
 
 
-class Station():
+class Station(object):
     props = None
     sensors = None
     measures = None
@@ -93,7 +93,7 @@ class SensorMode(Enum):
         return self.value
 
 
-class Sensor():
+class Sensor(object):
 
     props = None
 
@@ -153,7 +153,7 @@ class Sensor():
         return self.get_name()
 
 
-class Measure():
+class Measure(object):
     date = None
     data = {}
 
