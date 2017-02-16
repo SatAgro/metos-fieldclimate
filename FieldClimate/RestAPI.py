@@ -8,10 +8,16 @@ __email__ = "buiro@satagro.pl"
 
 import json
 import ssl
-import urllib
-import urllib2
 from datetime import datetime
 
+try:
+    # Python 2:
+    from urllib import urlencode
+    from urllib2 import urlopen
+except ImportError:
+    # Python 3:
+    from urllib.parse import urlencode
+    from urllib.request import urlopen
 
 class RestAPI():
 
@@ -23,9 +29,9 @@ class RestAPI():
     def call_api_method(self, method, params):
 
         url = self.API_URL + method
-        params = urllib.urlencode(params)
+        params = urlencode(params).encode('ascii')
         # Read url and parse from json
-        return json.loads(urllib2.urlopen(url, params).read())
+        return json.loads(urlopen(url, params).read())
 
 
 class FieldClimateRestAPI(RestAPI):
