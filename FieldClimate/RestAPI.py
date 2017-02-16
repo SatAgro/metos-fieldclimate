@@ -81,12 +81,14 @@ class FieldClimateRestAPI(RestAPI):
             if station['f_name'] == station_name:
                 return station
 
-    def get_station_data_last(self, station_name, rows=None, show_user_units=False):
+    def get_station_data_last(self, station_name, rows=None, group=None, show_user_units=False):
         params = self.auth_params({
             'station_name': station_name,
             'row_count': rows or self.CHUNK_SIZE,
             'show_user_units': int(show_user_units)
         })
+        if group is not None:
+            params.update({'group_code': group})
         req = self.call_api_method('CIDIStationData/GetLast', params)
         if 'ReturnDataSet' in req:
             return req['ReturnDataSet']
@@ -95,32 +97,38 @@ class FieldClimateRestAPI(RestAPI):
                 print(req)
             return req
 
-    def get_station_data_first(self, station_name, rows=None, show_user_units=False):
+    def get_station_data_first(self, station_name, rows=None, group=None, show_user_units=False):
         params = self.auth_params({
             'station_name': station_name,
             'row_count': rows or self.CHUNK_SIZE,
             'show_user_units': int(show_user_units)
         })
+        if group is not None:
+            params.update({'group_code': group})
 
         return self.call_api_method('CIDIStationData/GetFirst', params)['ReturnDataSet']
 
-    def get_station_data_next(self, station_name, rows=None, show_user_units=False, dt_to=datetime.now()):
+    def get_station_data_next(self, station_name, rows=None, group=None, show_user_units=False, dt_to=datetime.now()):
         params = self.auth_params({
             'station_name': station_name,
             'row_count': rows or self.CHUNK_SIZE,
             'dt_from': dt_to.strftime('%Y-%m-%d %H:%M:%S'),
             'show_user_units': int(show_user_units)
         })
+        if group is not None:
+            params.update({'group_code': group})
 
         return self.call_api_method('CIDIStationData/GetNext', params)['ReturnDataSet']
 
-    def get_station_data_from_date(self, station_name, rows=None, show_user_units=False, dt_from=datetime.now()):
+    def get_station_data_from_date(self, station_name, rows=None, group=None, show_user_units=False, dt_from=datetime.now()):
         params = self.auth_params({
             'station_name': station_name,
             'row_count': rows or self.CHUNK_SIZE,
             'dt_from': dt_from.strftime('%Y-%m-%d %H:%M:%S'),
             'show_user_units': int(show_user_units)
         })
+        if group is not None:
+            params.update({'group_code': group})
 
         return self.call_api_method('CIDIStationData/GetFromDate', params)['ReturnDataSet']
 
@@ -145,7 +153,11 @@ class FieldClimateRestAPI(RestAPI):
             for m in ms:
                 if date_max > datetime.strptime(m['f_date'], '%Y-%m-%d %H:%M:%S'):
                     measures.append(m)
-            date_down = datetime.strptime(ms[-1]['f_date'], '%Y-%m-%d %H:%M:%S')
+            if ms:
+                date_down = datetime.strptime(ms[-1]['f_date'], '%Y-%m-%d %H:%M:%S')
+            else:
+                # When using group, date_max will never be reached. So stop if zero rows are returned.
+                date_down = date_max
         return measures
 
     def get_station_all_data(self, station_name):
