@@ -22,7 +22,7 @@ if __name__ == '__main__':
     print(st)
     for s in st:
         # Get all raw data for a station
-        print("Downloading data for " + s['f_name'] + '(' + s['f_latitude'] + ', ' + s['f_longitude'] + ')')
+        print("Downloading data for {f_name} ({f_latitude}, {f_longitude})".format(**s))
         st_sensors = fc.get_station_sensors(s['f_name'])
         print("Available sensors")
         print(st_sensors)
@@ -41,5 +41,6 @@ if __name__ == '__main__':
             temp_sensor_0 = station.get_sensor('HC Air temperature')
         temp_sensor_1 = station.get_sensor('HC Air temperature')
         # Export data
-        print("Exporting data to " + s['f_name'] + "_" + s['f_latitude'] + "_" + s['f_longitude'] + ".csv")
-        station.to_csv(s['f_name'] + "_" + s['f_latitude'] + "_" + s['f_longitude'] + ".csv", [precip_sensor, temp_sensor_0, temp_sensor_1])
+        print("Exporting data to {f_name}_{f_latitude}_{f_longitude}.csv".format(**s))
+        station.to_csv("{f_name}_{f_latitude}_{f_longitude}.csv".format(**s),
+                       [precip_sensor, temp_sensor_0, temp_sensor_1])
