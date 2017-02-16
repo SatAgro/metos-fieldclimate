@@ -22,9 +22,11 @@ except ImportError:
 class RestAPI(object):
 
     API_URL = None
+    DEBUG = False
 
-    def __init__(self, url):
+    def __init__(self, url, debug=False):
         self.API_URL = url
+        self.DEBUG = debug
 
     def call_api_method(self, method, params):
 
@@ -39,9 +41,10 @@ class FieldClimateRestAPI(RestAPI):
     USER = None
     PASS = None
 
-    def __init__(self, user, passwd):
+    def __init__(self, user, passwd, debug=False):
 
-        super(FieldClimateRestAPI, self).__init__('http://www.fieldclimate.com/api/')
+        url = 'http://www.fieldclimate.com/api/'
+        super(FieldClimateRestAPI, self).__init__(url, debug)
         self.USER = user
         self.PASS = passwd
 
@@ -70,7 +73,8 @@ class FieldClimateRestAPI(RestAPI):
         if 'ReturnDataSet' in req:
             return req['ReturnDataSet']
         else:
-            print(req)
+            if self.DEBUG:
+                print(req)
             return req
 
     def get_station_data_first(self, station_name, rows=100, show_user_units=False):
@@ -112,7 +116,9 @@ class FieldClimateRestAPI(RestAPI):
     def get_station_data_between_dates(self, station_name, date_min, date_max=datetime.now()):
         measures = []
         # Get min and max dates and get data each 100 rows.
-        print('Getting data from {0} to {1}'.format(date_min.strftime('%Y-%m-%d %H:%M:%S'), date_max.strftime('%Y-%m-%d %H:%M:%S')))
+        if self.DEBUG:
+            print('Getting data from {0} to {1}'.format(date_min.strftime('%Y-%m-%d %H:%M:%S'),
+                                                        date_max.strftime('%Y-%m-%d %H:%M:%S')))
         date_down = date_min
         while date_down < date_max:
             ms = self.get_station_data_from_date(station_name, dt_from=date_down)
