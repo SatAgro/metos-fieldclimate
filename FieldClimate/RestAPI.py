@@ -42,6 +42,7 @@ class FieldClimateRestAPI(RestAPI):
 
     USER = None
     PASS = None
+    CHUNK_SIZE = 100
 
     def __init__(self, user, passwd, https=False, debug=False):
 
@@ -80,10 +81,10 @@ class FieldClimateRestAPI(RestAPI):
             if station['f_name'] == station_name:
                 return station
 
-    def get_station_data_last(self, station_name, rows=100, show_user_units=False):
+    def get_station_data_last(self, station_name, rows=None, show_user_units=False):
         params = self.auth_params({
             'station_name': station_name,
-            'row_count': rows,
+            'row_count': rows or self.CHUNK_SIZE,
             'show_user_units': int(show_user_units)
         })
         req = self.call_api_method('CIDIStationData/GetLast', params)
@@ -94,29 +95,29 @@ class FieldClimateRestAPI(RestAPI):
                 print(req)
             return req
 
-    def get_station_data_first(self, station_name, rows=100, show_user_units=False):
+    def get_station_data_first(self, station_name, rows=None, show_user_units=False):
         params = self.auth_params({
             'station_name': station_name,
-            'row_count': rows,
+            'row_count': rows or self.CHUNK_SIZE,
             'show_user_units': int(show_user_units)
         })
 
         return self.call_api_method('CIDIStationData/GetFirst', params)['ReturnDataSet']
 
-    def get_station_data_next(self, station_name, rows=100, show_user_units=False, dt_to=datetime.now()):
+    def get_station_data_next(self, station_name, rows=None, show_user_units=False, dt_to=datetime.now()):
         params = self.auth_params({
             'station_name': station_name,
-            'row_count': rows,
+            'row_count': rows or self.CHUNK_SIZE,
             'dt_from': dt_to.strftime('%Y-%m-%d %H:%M:%S'),
             'show_user_units': int(show_user_units)
         })
 
         return self.call_api_method('CIDIStationData/GetNext', params)['ReturnDataSet']
 
-    def get_station_data_from_date(self, station_name, rows=100, show_user_units=False, dt_from=datetime.now()):
+    def get_station_data_from_date(self, station_name, rows=None, show_user_units=False, dt_from=datetime.now()):
         params = self.auth_params({
             'station_name': station_name,
-            'row_count': rows,
+            'row_count': rows or self.CHUNK_SIZE,
             'dt_from': dt_from.strftime('%Y-%m-%d %H:%M:%S'),
             'show_user_units': int(show_user_units)
         })
