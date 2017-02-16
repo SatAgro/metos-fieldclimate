@@ -74,7 +74,7 @@ class Station(object):
         return header
 
     def to_csv(self, csv_path, sensors, delimiter=';'):
-        with open(csv_path, 'wb') as csv_file:
+        with open(csv_path, 'w') as csv_file:
             st_data = csv.writer(csv_file, delimiter=delimiter)
             header = self.get_sensors_measures_header(sensors)
             measures = self.get_sensors_measures(sensors)
