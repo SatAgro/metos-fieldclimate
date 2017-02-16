@@ -41,7 +41,7 @@ class FieldClimateRestAPI(RestAPI):
 
     def __init__(self, user, passwd):
 
-        RestAPI.__init__(self, 'http://www.fieldclimate.com/api/')
+        super(FieldClimateRestAPI, self).__init__('http://www.fieldclimate.com/api/')
         self.USER = user
         self.PASS = passwd
 
