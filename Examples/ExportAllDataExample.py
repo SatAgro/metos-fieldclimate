@@ -11,7 +11,6 @@ import sys
 from FieldClimate import RestAPI
 from FieldClimate.Data import Station
 
-
 if __name__ == '__main__':
     # Simple test and usage example.
     USER = sys.argv[1]
@@ -27,7 +26,7 @@ if __name__ == '__main__':
         print("Available sensors")
         print(st_sensors)
         print("Downloading measures...")
-        st_measures = fc.get_station_all_data(s['f_name']) #fc.get_station_data_last(s['f_name']) #
+        st_measures = fc.get_station_all_data(s['f_name'])  # fc.get_station_data_last(s['f_name'])
         # create station
         station = Station(s, st_sensors, st_measures)
         for i in station.get_sensors():

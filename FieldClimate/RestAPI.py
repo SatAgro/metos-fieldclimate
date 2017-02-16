@@ -19,8 +19,8 @@ except ImportError:
     from urllib.parse import urlencode
     from urllib.request import urlopen
 
-class RestAPI(object):
 
+class RestAPI(object):
     API_URL = None
     DEBUG = False
     context = None
@@ -30,7 +30,6 @@ class RestAPI(object):
         self.DEBUG = debug
 
     def call_api_method(self, method, params):
-
         url = self.API_URL + method
         params = urlencode(params).encode('ascii')
         # Read url and parse from json
@@ -39,13 +38,11 @@ class RestAPI(object):
 
 
 class FieldClimateRestAPI(RestAPI):
-
     USER = None
     PASS = None
     CHUNK_SIZE = 100
 
     def __init__(self, user, passwd, https=False, debug=False):
-
         if https:
             # Warning: Fieldclimate's certificate doesn't seem to validate.
             # This workaround disables cert verification, but keeps TLS encryption.
@@ -67,11 +64,9 @@ class FieldClimateRestAPI(RestAPI):
         return params
 
     def get_stations(self):
-
         params = self.auth_params({
             'row_count': 5000  # todo: resolve case for >5000 stations
         })
-
         return self.call_api_method('CIDIStationList/GetFirst', params)['ReturnDataSet']
 
     def get_station(self, station_name):
@@ -105,7 +100,6 @@ class FieldClimateRestAPI(RestAPI):
         })
         if group is not None:
             params.update({'group_code': group})
-
         return self.call_api_method('CIDIStationData/GetFirst', params)['ReturnDataSet']
 
     def get_station_data_next(self, station_name, rows=None, group=None, show_user_units=False, dt_to=None):
@@ -119,7 +113,6 @@ class FieldClimateRestAPI(RestAPI):
         })
         if group is not None:
             params.update({'group_code': group})
-
         return self.call_api_method('CIDIStationData/GetNext', params)['ReturnDataSet']
 
     def get_station_data_from_date(self, station_name, rows=None, group=None, show_user_units=False, dt_from=None):
@@ -154,7 +147,7 @@ class FieldClimateRestAPI(RestAPI):
             ms = self.get_station_data_from_date(station_name, group=group, show_user_units=show_user_units,
                                                  dt_from=date_down)
             if not date_min == date_down:
-                ms.pop(0)   # Pop first element due to it is te last of previous call.
+                ms.pop(0)  # Pop first element due to it is te last of previous call.
             for m in ms:
                 if date_max > datetime.strptime(m['f_date'], '%Y-%m-%d %H:%M:%S'):
                     measures.append(m)
@@ -177,15 +170,12 @@ class FieldClimateRestAPI(RestAPI):
         params = self.auth_params({
             'station_name': station_name
         })
-
         return self.call_api_method('CIDIStationSensors/Get', params)['ReturnDataSet']
 
     def get_station_sensors_statuses(self, station_name, dt_from, dt_to=datetime.now()):
         params = self.auth_params({
             'station_name': station_name,
             'dt_from': dt_from.strftime('%Y-%m-%d'),
-            'dt_to':  dt_to.strftime('%Y-%m-%d')
+            'dt_to': dt_to.strftime('%Y-%m-%d')
         })
-
         return self.call_api_method('CIDIStationSensors/GetSensorsStatuses', params)['ReturnDataSet']
-

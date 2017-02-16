@@ -94,7 +94,6 @@ class SensorMode(Enum):
 
 
 class Sensor(object):
-
     props = None
 
     def __init__(self, properties):

@@ -11,7 +11,6 @@ import sys
 from FieldClimate import RestAPI
 from FieldClimate.Data import Station
 
-
 if __name__ == '__main__':
     # Simple test and usage example.
     USER = sys.argv[1]
@@ -22,8 +21,8 @@ if __name__ == '__main__':
 
     dates = fc.get_station_data_available_dates(st[0]['f_name'])
 
-    #mss = fc.get_station_all_data(st[0]['f_name'])
-    #print(mss)
+    # mss = fc.get_station_all_data(st[0]['f_name'])
+    # print(mss)
 
     print(dates)
 
@@ -47,5 +46,3 @@ if __name__ == '__main__':
 
     for pm in all_measures:
         print(pm)
-
-
