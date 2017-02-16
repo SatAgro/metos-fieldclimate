@@ -156,6 +156,7 @@ class Sensor(object):
 class Measure(object):
     date = None
     data = {}
+    delimiter = ';'
 
     def __init__(self, date_txt):
         self.data = {}
@@ -185,5 +186,5 @@ class Measure(object):
     def __str__(self):
         str = self.date.strftime("%Y-%m-%d %H:%M:%S")
         for v in self.get_values():
-            str += ';{0}'.format(v)
+            str += '{0}{1}'.format(self.delimiter, v)
         return str
