@@ -73,6 +73,13 @@ class FieldClimateRestAPI(RestAPI):
 
         return self.call_api_method('CIDIStationList/GetFirst', params)['ReturnDataSet']
 
+    def get_station(self, station_name):
+        # todo: It would be more efficient to ask the server for just one station,
+        # but there doesn't seem to be an API method for this use case.
+        for station in self.get_stations():
+            if station['f_name'] == station_name:
+                return station
+
     def get_station_data_last(self, station_name, rows=100, show_user_units=False):
         params = self.auth_params({
             'station_name': station_name,
