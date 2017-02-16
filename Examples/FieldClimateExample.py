@@ -2,7 +2,7 @@ from __future__ import print_function
 
 __author__ = "Krzysztof Stopa"
 __copyright__ = "Copyright 2015 SatAgro"
-__credits__ = ["Krzysztof Stopa", "Przemyslaw Zelazowski"]
+__credits__ = ["Krzysztof Stopa", "Przemyslaw Zelazowski", "Phillip Marshall"]
 __license__ = "LGPL"
 __email__ = "buiro@satagro.pl"
 

@@ -46,6 +46,7 @@ Below you can find basic usage example.
 
 ## License
 
-Krzysztof Stopa, Przemysław Żelazowski - SatAgro Project
+Krzysztof Stopa, Przemysław Żelazowski - SatAgro Project<br>
+Phillip Marshall - Agrimanagement, Inc.
 
 GNU LESSER GENERAL PUBLIC LICENSE Version 3
