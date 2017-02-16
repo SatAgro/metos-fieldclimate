@@ -45,23 +45,27 @@ class FieldClimateRestAPI(RestAPI):
         self.USER = user
         self.PASS = passwd
 
-    def get_stations(self):
-
+    def auth_params(self, more=None):
         params = {
             'user_name': self.USER,
             'user_passw': self.PASS
         }
+        if more is not None:
+            params.update(more)
+        return params
+
+    def get_stations(self):
+
+        params = self.auth_params()
 
         return self.call_api_method('CIDIStationList/GetFirst', params)['ReturnDataSet']
 
     def get_station_data_last(self, station_name, rows=100, show_user_units=False):
-        params = {
-            'user_name': self.USER,
-            'user_passw': self.PASS,
+        params = self.auth_params({
             'station_name': station_name,
             'row_count': rows,
             'show_user_units': int(show_user_units)
-        }
+        })
         req = self.call_api_method('CIDIStationData/GetLast', params)
         if 'ReturnDataSet' in req:
             return req['ReturnDataSet']
@@ -70,46 +74,38 @@ class FieldClimateRestAPI(RestAPI):
             return req
 
     def get_station_data_first(self, station_name, rows=100, show_user_units=False):
-        params = {
-            'user_name': self.USER,
-            'user_passw': self.PASS,
+        params = self.auth_params({
             'station_name': station_name,
             'row_count': rows,
             'show_user_units': int(show_user_units)
-        }
+        })
 
         return self.call_api_method('CIDIStationData/GetFirst', params)['ReturnDataSet']
 
     def get_station_data_next(self, station_name, rows=100, show_user_units=False, dt_to=datetime.now()):
-        params = {
-            'user_name': self.USER,
-            'user_passw': self.PASS,
+        params = self.auth_params({
             'station_name': station_name,
             'row_count': rows,
             'dt_from': dt_to.strftime('%Y-%m-%d %H:%M:%S'),
             'show_user_units': int(show_user_units)
-        }
+        })
 
         return self.call_api_method('CIDIStationData/GetNext', params)['ReturnDataSet']
 
     def get_station_data_from_date(self, station_name, rows=100, show_user_units=False, dt_from=datetime.now()):
-        params = {
-            'user_name': self.USER,
-            'user_passw': self.PASS,
+        params = self.auth_params({
             'station_name': station_name,
             'row_count': rows,
             'dt_from': dt_from.strftime('%Y-%m-%d %H:%M:%S'),
             'show_user_units': int(show_user_units)
-        }
+        })
 
         return self.call_api_method('CIDIStationData/GetFromDate', params)['ReturnDataSet']
 
     def get_station_data_available_dates(self, station_name):
-        params = {
-            'user_name': self.USER,
-            'user_passw': self.PASS,
+        params = self.auth_params({
             'station_name': station_name,
-        }
+        })
 
         return self.call_api_method('CIDIStationData/GetMinMaxDate', params)['ReturnDataSet']
 
@@ -137,22 +133,18 @@ class FieldClimateRestAPI(RestAPI):
         return self.get_station_data_between_dates(station_name, date_min, date_max)
 
     def get_station_sensors(self, station_name):
-        params = {
-            'user_name': self.USER,
-            'user_passw': self.PASS,
+        params = self.auth_params({
             'station_name': station_name
-        }
+        })
 
         return self.call_api_method('CIDIStationSensors/Get', params)['ReturnDataSet']
 
     def get_station_sensors_statuses(self, station_name, dt_from, dt_to=datetime.now()):
-        params = {
-            'user_name': self.USER,
-            'user_passw': self.PASS,
+        params = self.auth_params({
             'station_name': station_name,
             'dt_from': dt_from.strftime('%Y-%m-%d'),
             'dt_to':  dt_to.strftime('%Y-%m-%d')
-        }
+        })
 
         return self.call_api_method('CIDIStationSensors/GetSensorsStatuses', params)['ReturnDataSet']
 
