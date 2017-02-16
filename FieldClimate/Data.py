@@ -17,7 +17,7 @@ class Station():
     measures = None
 
     def __init__(self, properties, sensors, measures):
-        self.pros = properties
+        self.props = properties
         self.sensors = sensors
         self.measures = measures
 
@@ -80,7 +80,7 @@ class Station():
             measures = self.get_sensors_measures(sensors)
             st_data.writerow(header)
             for m in measures:
-                st_data.writerow([m.date] + m.values)
+                st_data.writerow([m.date] + m.get_values())
 
 
 class SensorMode(Enum):

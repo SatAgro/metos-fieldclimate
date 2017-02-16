@@ -21,7 +21,7 @@ except ImportError:
 
 class RestAPI():
 
-    APIURL = None
+    API_URL = None
 
     def __init__(self, url):
         self.API_URL = url
