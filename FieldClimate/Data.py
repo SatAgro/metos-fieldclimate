@@ -1,15 +1,14 @@
 from __future__ import print_function
+
 __author__ = "Krzysztof Stopa"
 __copyright__ = "Copyright 2015 SatAgro"
 __credits__ = ["Krzysztof Stopa", "Przemyslaw Zelazowski"]
 __license__ = "LGPL"
 __email__ = "buiro@satagro.pl"
 
+import csv
 from datetime import datetime
 from enum import Enum
-import csv
-
-__author__ = 'kstopa'
 
 
 class Station():

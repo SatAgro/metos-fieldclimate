@@ -1,14 +1,15 @@
 from __future__ import print_function
+
 __author__ = "Krzysztof Stopa"
 __copyright__ = "Copyright 2015 SatAgro"
 __credits__ = ["Krzysztof Stopa", "Przemyslaw Zelazowski"]
 __license__ = "LGPL"
 __email__ = "buiro@satagro.pl"
 
+import json
+import ssl
 import urllib
 import urllib2
-import json
-
 from datetime import datetime
 
 
