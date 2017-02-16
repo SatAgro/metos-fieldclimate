@@ -23,6 +23,7 @@ class RestAPI(object):
 
     API_URL = None
     DEBUG = False
+    context = None
 
     def __init__(self, url, debug=False):
         self.API_URL = url
@@ -33,7 +34,8 @@ class RestAPI(object):
         url = self.API_URL + method
         params = urlencode(params).encode('ascii')
         # Read url and parse from json
-        return json.loads(urlopen(url, params).read())
+        # Note: The context argument was added in Python 2.7.9 and 3.4.3
+        return json.loads(urlopen(url, params, context=self.context).read())
 
 
 class FieldClimateRestAPI(RestAPI):
@@ -41,9 +43,15 @@ class FieldClimateRestAPI(RestAPI):
     USER = None
     PASS = None
 
-    def __init__(self, user, passwd, debug=False):
+    def __init__(self, user, passwd, https=False, debug=False):
 
-        url = 'http://www.fieldclimate.com/api/'
+        if https:
+            # Warning: Fieldclimate's certificate doesn't seem to validate.
+            # This workaround disables cert verification, but keeps TLS encryption.
+            url = 'https://www.fieldclimate.com/api/'
+            self.gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+        else:
+            url = 'http://www.fieldclimate.com/api/'
         super(FieldClimateRestAPI, self).__init__(url, debug)
         self.USER = user
         self.PASS = passwd
