@@ -67,7 +67,9 @@ class FieldClimateRestAPI(RestAPI):
 
     def get_stations(self):
 
-        params = self.auth_params()
+        params = self.auth_params({
+            'row_count': 5000  # todo: resolve case for >5000 stations
+        })
 
         return self.call_api_method('CIDIStationList/GetFirst', params)['ReturnDataSet']
 
