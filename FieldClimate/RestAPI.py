@@ -125,7 +125,6 @@ class FieldClimateRestAPI(RestAPI):
         return measures
 
     def get_station_all_data(self, station_name):
-        measures = []
         # Get min and max dates and get data each 100 rows.
         dates = self.get_station_data_available_dates(station_name)
         date_min = datetime.strptime(dates['f_date_min'], '%Y-%m-%d %H:%M:%S')
