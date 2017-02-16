@@ -108,7 +108,9 @@ class FieldClimateRestAPI(RestAPI):
 
         return self.call_api_method('CIDIStationData/GetFirst', params)['ReturnDataSet']
 
-    def get_station_data_next(self, station_name, rows=None, group=None, show_user_units=False, dt_to=datetime.now()):
+    def get_station_data_next(self, station_name, rows=None, group=None, show_user_units=False, dt_to=None):
+        if dt_to is None:
+            dt_to = datetime.now()
         params = self.auth_params({
             'station_name': station_name,
             'row_count': rows or self.CHUNK_SIZE,
@@ -120,7 +122,9 @@ class FieldClimateRestAPI(RestAPI):
 
         return self.call_api_method('CIDIStationData/GetNext', params)['ReturnDataSet']
 
-    def get_station_data_from_date(self, station_name, rows=None, group=None, show_user_units=False, dt_from=datetime.now()):
+    def get_station_data_from_date(self, station_name, rows=None, group=None, show_user_units=False, dt_from=None):
+        if dt_from is None:
+            dt_from = datetime.now()
         params = self.auth_params({
             'station_name': station_name,
             'row_count': rows or self.CHUNK_SIZE,
@@ -139,7 +143,9 @@ class FieldClimateRestAPI(RestAPI):
 
         return self.call_api_method('CIDIStationData/GetMinMaxDate', params)['ReturnDataSet']
 
-    def get_station_data_between_dates(self, station_name, date_min, date_max=datetime.now()):
+    def get_station_data_between_dates(self, station_name, date_min, date_max=None):
+        if date_max is None:
+            date_max = datetime.now()
         measures = []
         # Get min and max dates and get data each 100 rows.
         if self.DEBUG:
