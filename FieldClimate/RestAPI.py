@@ -133,17 +133,15 @@ class FieldClimateRestAPI(RestAPI):
         })
         if group is not None:
             params.update({'group_code': group})
-
         return self.call_api_method('CIDIStationData/GetFromDate', params)['ReturnDataSet']
 
     def get_station_data_available_dates(self, station_name):
         params = self.auth_params({
             'station_name': station_name,
         })
-
         return self.call_api_method('CIDIStationData/GetMinMaxDate', params)['ReturnDataSet']
 
-    def get_station_data_between_dates(self, station_name, date_min, date_max=None):
+    def get_station_data_between_dates(self, station_name, date_min, date_max=None, group=None, show_user_units=False):
         if date_max is None:
             date_max = datetime.now()
         measures = []
@@ -153,7 +151,8 @@ class FieldClimateRestAPI(RestAPI):
                                                         date_max.strftime('%Y-%m-%d %H:%M:%S')))
         date_down = date_min
         while date_down < date_max:
-            ms = self.get_station_data_from_date(station_name, dt_from=date_down)
+            ms = self.get_station_data_from_date(station_name, group=group, show_user_units=show_user_units,
+                                                 dt_from=date_down)
             if not date_min == date_down:
                 ms.pop(0)   # Pop first element due to it is te last of previous call.
             for m in ms:
@@ -166,12 +165,13 @@ class FieldClimateRestAPI(RestAPI):
                 date_down = date_max
         return measures
 
-    def get_station_all_data(self, station_name):
+    def get_station_all_data(self, station_name, group=None, show_user_units=False):
         # Get min and max dates and get data each 100 rows.
         dates = self.get_station_data_available_dates(station_name)
         date_min = datetime.strptime(dates['f_date_min'], '%Y-%m-%d %H:%M:%S')
         date_max = datetime.strptime(dates['f_date_max'], '%Y-%m-%d %H:%M:%S')
-        return self.get_station_data_between_dates(station_name, date_min, date_max)
+        return self.get_station_data_between_dates(station_name, date_min, date_max, group=group,
+                                                   show_user_units=show_user_units)
 
     def get_station_sensors(self, station_name):
         params = self.auth_params({
