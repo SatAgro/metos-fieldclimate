@@ -1,23 +1,23 @@
+from __future__ import print_function
+
 __author__ = "Krzysztof Stopa"
 __copyright__ = "Copyright 2015 SatAgro"
-__credits__ = ["Krzysztof Stopa", "Przemyslaw Zelazowski"]
+__credits__ = ["Krzysztof Stopa", "Przemyslaw Zelazowski", "Phillip Marshall"]
 __license__ = "LGPL"
 __email__ = "buiro@satagro.pl"
 
+import csv
 from datetime import datetime
 from enum import Enum
-import csv
-
-__author__ = 'kstopa'
 
 
-class Station():
+class Station(object):
     props = None
     sensors = None
     measures = None
 
     def __init__(self, properties, sensors, measures):
-        self.pros = properties
+        self.props = properties
         self.sensors = sensors
         self.measures = measures
 
@@ -74,13 +74,13 @@ class Station():
         return header
 
     def to_csv(self, csv_path, sensors, delimiter=';'):
-        with open(csv_path, 'wb') as csv_file:
+        with open(csv_path, 'w') as csv_file:
             st_data = csv.writer(csv_file, delimiter=delimiter)
             header = self.get_sensors_measures_header(sensors)
             measures = self.get_sensors_measures(sensors)
             st_data.writerow(header)
             for m in measures:
-                st_data.writerow([m.date] + m.values)
+                st_data.writerow([m.date] + m.get_values())
 
 
 class SensorMode(Enum):
@@ -93,8 +93,7 @@ class SensorMode(Enum):
         return self.value
 
 
-class Sensor():
-
+class Sensor(object):
     props = None
 
     def __init__(self, properties):
@@ -153,9 +152,10 @@ class Sensor():
         return self.get_name()
 
 
-class Measure():
+class Measure(object):
     date = None
     data = {}
+    delimiter = ';'
 
     def __init__(self, date_txt):
         self.data = {}
@@ -185,5 +185,5 @@ class Measure():
     def __str__(self):
         str = self.date.strftime("%Y-%m-%d %H:%M:%S")
         for v in self.get_values():
-            str += ';{0}'.format(v)
+            str += '{0}{1}'.format(self.delimiter, v)
         return str

@@ -1,10 +1,17 @@
-__author__ = 'kstopa'
+from __future__ import print_function
 
-from RestAPI import FieldClimateRestAPI
-from Data import Station, SensorMode
-from datetime import datetime, timedelta
+__author__ = "Krzysztof Stopa"
+__copyright__ = "Copyright 2015 SatAgro"
+__credits__ = ["Krzysztof Stopa", "Przemyslaw Zelazowski", "Phillip Marshall"]
+__license__ = "LGPL"
+__email__ = "buiro@satagro.pl"
 
 import sys
+from datetime import datetime, timedelta
+
+from Data import Station, SensorMode
+from RestAPI import FieldClimateRestAPI
+
 
 def get_station_data_date(user, password, station_name, date=datetime.now()):
     """
@@ -44,7 +51,7 @@ def get_station_data_date(user, password, station_name, date=datetime.now()):
         }
         return date_data
     else:
-        print "No station found!"
+        print("No station found!")
         return None
 
 
@@ -95,4 +102,4 @@ if __name__ == '__main__':
     start = get_station_date_min(USER, PASS, '00002E06')
     print(start)
     data = get_station_data_date(USER, PASS, '00002E06', datetime.now() - timedelta(days=1))
-    print data
+    print(data)
