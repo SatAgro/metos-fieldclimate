@@ -76,6 +76,12 @@ class FieldClimateRestAPI(RestAPI):
             if station['f_name'] == station_name:
                 return station
 
+    def get_station_config(self, station_name):
+        params = self.auth_params({
+            'station_name': station_name
+        })
+        return self.call_api_method('CIDIStationConfig2/Get', params)['ReturnDataSet'][0]
+
     def get_station_data_last(self, station_name, rows=None, group=None, show_user_units=False):
         params = self.auth_params({
             'station_name': station_name,
