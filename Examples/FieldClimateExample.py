@@ -1,6 +1,8 @@
+from __future__ import print_function
+
 __author__ = "Krzysztof Stopa"
 __copyright__ = "Copyright 2015 SatAgro"
-__credits__ = ["Krzysztof Stopa", "Przemyslaw Zelazowski"]
+__credits__ = ["Krzysztof Stopa", "Przemyslaw Zelazowski", "Phillip Marshall"]
 __license__ = "LGPL"
 __email__ = "buiro@satagro.pl"
 
@@ -8,7 +10,6 @@ import sys
 
 from FieldClimate import RestAPI
 from FieldClimate.Data import Station
-
 
 if __name__ == '__main__':
     # Simple test and usage example.
@@ -20,8 +21,8 @@ if __name__ == '__main__':
 
     dates = fc.get_station_data_available_dates(st[0]['f_name'])
 
-    #mss = fc.get_station_all_data(st[0]['f_name'])
-    #print(mss)
+    # mss = fc.get_station_all_data(st[0]['f_name'])
+    # print(mss)
 
     print(dates)
 
@@ -44,6 +45,4 @@ if __name__ == '__main__':
     station.to_csv('test.csv', station.get_sensors())
 
     for pm in all_measures:
-        print pm
-
-
+        print(pm)

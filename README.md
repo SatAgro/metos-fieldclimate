@@ -11,6 +11,10 @@ By now, the repository is not available at pip but still, you can easily install
     pip install git+https://github.com/SatAgro/metos-fieldclimate.git
 
 
+## Requirements
+
+Python 2.7.9+ and 3.4.3+ should be compatible. Python 2 users need to install `enum34` from pypi.
+
 ## Usage
 
 In order to use data from FieldClimate meteorological stations in your applications you must follow this steps:
@@ -42,6 +46,7 @@ Below you can find basic usage example.
 
 ## License
 
-Krzysztof Stopa, Przemysław Żelazowski - SatAgro Project
+Krzysztof Stopa, Przemysław Żelazowski - SatAgro Project<br>
+Phillip Marshall - Agrimanagement, Inc.
 
 GNU LESSER GENERAL PUBLIC LICENSE Version 3
