@@ -34,7 +34,8 @@ class RestAPI(object):
         params = urlencode(params).encode('ascii')
         # Read url and parse from json
         # Note: The context argument was added in Python 2.7.9 and 3.4.3
-        return json.loads(urlopen(url, params, context=self.context).read())
+        request = urlopen(url, params, context=self.context).read().decode('utf8')
+        return json.loads(request)
 
 
 class FieldClimateRestAPI(RestAPI):
