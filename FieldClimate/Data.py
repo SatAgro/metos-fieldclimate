@@ -45,12 +45,34 @@ class Station(object):
         return float(self.props['f_longitude'])
 
     def get_sensor(self, sensor_name):
+        """
+        Get a sensor by its name.
+        :param sensor_name: Sensor name located at s['f_name'] of the json response.
+        :return: a Sensor or None if sensor does not exists.
+        """
         for s in self.sensors:
             if s['f_name'] == sensor_name:
                 return Sensor(s)
         return None
 
+    def find_sensors(self, sensor_name):
+        """
+        Find sensor that contains sensor_name in its name. Not case sensitive.
+        :param sensor_name: 
+        :return: 
+        """
+        sensors = []
+        sn = sensor_name.lower()
+        for s in self.sensors:
+            if sn in s['f_name'].lower():
+                sensors.append(Sensor(s))
+        return sensors
+
     def get_sensors(self):
+        """
+        Get all sensors of given station.
+        :return: A list of Sensors
+        """
         sensors = []
         for s in self.sensors:
             sensors.append(Sensor(s))

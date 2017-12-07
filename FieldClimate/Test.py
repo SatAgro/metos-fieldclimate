@@ -1,6 +1,4 @@
-
 import unittest
-import datetime
 import os
 from FieldClimate import RestAPI
 
@@ -20,14 +18,10 @@ class TestMetosRestAPI(unittest.TestCase):
         for s in stations:
             sensors = api.get_station_sensors(s['f_name'])
             self.assertGreater(len(sensors), 1, "Station {0} has no sensors".format(s['f_name']))
-            print(sensors)
-
-
 
 if __name__ == '__main__':
     """
     Run the tests
     Note that METOS_USER and METOS_PASSWORD should be set to complete the tests
     """
-
     unittest.main()

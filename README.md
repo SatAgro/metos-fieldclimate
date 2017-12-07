@@ -44,6 +44,13 @@ Below you can find basic usage example.
     # Export all sensors data to CSV file
     station.to_csv('test.csv', station.get_sensors())
 
+## Testing
+
+Simple unit test has been added to check the proper installation and basic 
+functionality of the library. To run it just type:
+
+    python Test.py
+
 ## License
 
 Krzysztof Stopa, Przemysław Żelazowski - SatAgro Project<br>
