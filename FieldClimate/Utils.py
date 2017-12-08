@@ -8,9 +8,8 @@ __email__ = "buiro@satagro.pl"
 
 import sys
 from datetime import datetime, timedelta
-
-from Data import Station, SensorMode
-from RestAPI import FieldClimateRestAPI
+from FieldClimate.Data import Station, SensorMode
+from FieldClimate.RestAPI import FieldClimateRestAPI
 
 
 def get_station_data_date(user, password, station_name, date=datetime.now()):
@@ -70,33 +69,38 @@ def get_station_date_min(user, password, station_name):
     return datetime.strptime(dates['f_date_min'], '%Y-%m-%d %H:%M:%S')
 
 
-def get_sensor_average(sensor_name, measures, mode=SensorMode.MODE_AVE):
-    return round(get_sensor_sum(sensor_name, measures, mode)/ len(measures), 4)
+def get_sensor_average(sensor_name, measures, precision=2, mode=SensorMode.MODE_AVE):
+    if len(measures):
+        return round(get_sensor_sum(sensor_name, measures, precision+1, mode) / len(measures), precision)
+    else:
+        return measures
 
 
-def get_sensor_sum(sensor_name, measures, mode=SensorMode.MODE_SUM):
+def get_sensor_sum(sensor_name, measures, precision=2, mode=SensorMode.MODE_SUM):
     m_sum = 0
     for m in measures:
         m_val = m.get_value(sensor_name, mode)
         if m_val:
             m_sum = m_sum + m_val
-    return round(m_sum, 4)
+    return round(m_sum, precision)
 
-def get_sensor_min(sensor_name, measures, mode=SensorMode.MODE_MIN):
+
+def get_sensor_min(sensor_name, measures, precision=2, mode=SensorMode.MODE_MIN):
     m_min = sys.float_info.max
     for m in measures:
         m_val = m.get_value(sensor_name, mode)
         if m_val and m_val < m_min:
             m_min = m_val
-    return round(m_min, 4)
+    return round(m_min, precision)
 
-def get_sensor_max(sensor_name, measures, mode=SensorMode.MODE_MAX):
+
+def get_sensor_max(sensor_name, measures, precision=2, mode=SensorMode.MODE_MAX):
     m_max = sys.float_info.min
     for m in measures:
         m_val = m.get_value(sensor_name, mode)
         if m_val and m_val > m_max:
             m_max = m_val
-    return round(m_max, 4)
+    return round(m_max, precision)
 
 
 if __name__ == '__main__':

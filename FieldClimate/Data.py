@@ -78,14 +78,20 @@ class Station(object):
             sensors.append(Sensor(s))
         return sensors
 
-    def get_sensors_measures(self, sensors):
+    def get_sensors_measures(self, sensors, sens_date=None):
+        """ 
+        Get all measures a given sensors and optionally at given date.
+        """
         mss = []
+        if sens_date:
+            fmt_date = sens_date.strftime('%Y-%m-%d')
         for m in self.measures:
-            sm = Measure(m['f_date'])
-            for s in sensors:
-                for mode in s.get_modes():
-                    sm.add_value(s, mode, m[s.get_measure_id(mode)])
-            mss.append(sm)
+            if not sens_date or fmt_date in m['f_date']:
+                sm = Measure(m['f_date'])
+                for s in sensors:
+                    for mode in s.get_modes():
+                        sm.add_value(s.get_name(), mode, m[s.get_measure_id(mode)])
+                mss.append(sm)
         return mss
 
     def get_sensors_measures_header(self, sensors):
@@ -94,6 +100,7 @@ class Station(object):
             for mode in s.get_modes():
                 header.append(s.get_name() + '_' + s.get_measure_id(mode))
         return header
+
 
     def to_csv(self, csv_path, sensors, delimiter=';'):
         with open(csv_path, 'w') as csv_file:
@@ -186,7 +193,9 @@ class Measure(object):
     def add_value(self, sensor, mode, value):
         if sensor not in self.data:
             self.data[sensor] = {}
-        self.data[sensor][mode] = round(float(value), 2)
+        if value:
+            self.data[sensor][mode] = round(float(value), 2)
+
 
     def get_values(self):
         values = []

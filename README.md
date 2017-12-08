@@ -31,11 +31,12 @@ Below you can find basic usage example.
     station_json = fc.get_stations()[0]
 
     # Get station sensor specification and data
-    measures_json = fc.get_station_data_first(station_json['f_name'])
     sensors_json = fc.get_station_sensors(station_json['f_name'])
+    measures_json = fc.get_station_data_first(station_json['f_name'])
+    
 
     # Initialize Station class and work with it
-    station = Station(st, sens_st1, data_st1)
+    station = Station(station_json, sensors_json, measures_json)
 
     precip_sensor = station.get_sensor('Precipitation')
     temp_sensor = station.get_sensor('Air temperature')
@@ -46,7 +47,7 @@ Below you can find basic usage example.
 
 ## Testing
 
-Simple unit test has been added to check the proper installation and basic 
+Simple unit tests have been added to check the proper installation and basic 
 functionality of the library. To run it just type:
 
     python Test.py

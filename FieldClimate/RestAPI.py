@@ -76,6 +76,8 @@ class FieldClimateRestAPI(RestAPI):
         for station in self.get_stations():
             if station['f_name'] == station_name:
                 return station
+        # Station not found
+        return None
 
     def get_station_config(self, station_name):
         params = self.auth_params({
