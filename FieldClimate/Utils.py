@@ -9,7 +9,7 @@ __email__ = "buiro@satagro.pl"
 import sys
 from datetime import datetime, timedelta
 from FieldClimate.Data import Station, SensorMode
-from FieldClimate.RestAPI import FieldClimateRestAPI
+from Api import FieldClimateRestAPI
 
 
 def get_station_data_date(user, password, station_name, date=datetime.now()):

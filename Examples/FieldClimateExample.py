@@ -8,14 +8,14 @@ __email__ = "buiro@satagro.pl"
 
 import sys
 
-from FieldClimate import RestAPI
+from FieldClimate.Api import FieldClimateRestAPI
 from FieldClimate.Data import Station
 
 if __name__ == '__main__':
     # Simple test and usage example.
     USER = sys.argv[1]
     PASS = sys.argv[2]
-    fc = RestAPI.FieldClimateRestAPI(USER, PASS)
+    fc = FieldClimateRestAPI(USER, PASS)
     st = fc.get_stations()
     print(st)
 

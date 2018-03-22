@@ -23,11 +23,11 @@ In order to use data from FieldClimate meteorological stations in your applicati
 
 Below you can find basic usage example.
 
-    from FieldClimate import RestAPI
+    from FieldClimate.Api import FieldClimateRestAPI
     from FieldClimate.Data import Station
 
     # Connect and get first station
-    fc = RestAPI.FieldClimateRestAPI(YOUR_USER, YOUR_PASS)
+    fc = FieldClimateRestAPI(YOUR_USER, YOUR_PASS)
     station_json = fc.get_stations()[0]
 
     # Get station sensor specification and data

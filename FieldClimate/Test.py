@@ -1,6 +1,7 @@
 import unittest
 import os
-from FieldClimate import RestAPI
+import datetime
+from FieldClimate.Api import FieldClimateRestAPI
 from FieldClimate.Data import Station
 
 class MetosTest(unittest.TestCase):
@@ -13,7 +14,7 @@ class MetosTest(unittest.TestCase):
         self.assertNotEqual(self.METOS_PASSWORD, '', "METOS_PASSWORD env variable must be set to perform the test.")
 
     def test_stations(self):
-        api = RestAPI.FieldClimateRestAPI(self.METOS_USER, self.METOS_PASSWORD, debug=True)
+        api = FieldClimateRestAPI(self.METOS_USER, self.METOS_PASSWORD, debug=True)
         stations = api.get_stations()
         self.assertGreater(len(stations), 0, "Error getting stations.")
         for s in stations:
@@ -21,9 +22,8 @@ class MetosTest(unittest.TestCase):
             self.assertGreater(len(sensors), 1, "Station {0} has no sensors".format(s['f_name']))
 
     def test_sensors(self):
-        import  datetime
         find_sensors = ['temperature', 'relative', 'precipitation', 'wind']
-        api = RestAPI.FieldClimateRestAPI(self.METOS_USER, self.METOS_PASSWORD, debug=True)
+        api = FieldClimateRestAPI(self.METOS_USER, self.METOS_PASSWORD, debug=True)
         stations = api.get_stations()
         for s in stations:
             s_name = s['f_name']
@@ -36,9 +36,9 @@ class MetosTest(unittest.TestCase):
                 print(sensor)
                 f_sensors = station.find_sensors(sensor)
                 self.assertGreater(len(f_sensors), 0, 'Station {0} has no {1} sensors'.format(s_name, sensor))
-                mss = station.get_sensors_measures(f_sensors, datetime.date(2016, 1, 1))
-                self.assertEqual(len(mss), 50,
-                                 'Missing {0} measures data. Expecting {1} and get {2} measures.'.format(sensor, 50, len(mss)))
+                mss = station.get_sensors_measures(f_sensors)
+                self.assertEqual(len(mss), 50, 'Missing {0} measures data. Expecting {1} and get {2} measures.'
+                                 .format(sensor, 50, len(mss)))
 
 
 if __name__ == '__main__':
