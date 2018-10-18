@@ -55,11 +55,17 @@ class Station(object):
                 return Sensor(s)
         return None
 
+    def get_sensor_by_code(self, sensor_code):
+        for s in self.sensors:
+            if s['f_sensor_code'] == str(sensor_code):
+                return Sensor(s)
+        return None
+
     def find_sensors(self, sensor_name):
         """
         Find sensor that contains sensor_name in its name. Not case sensitive.
-        :param sensor_name: 
-        :return: 
+        :param sensor_name:
+        :return:
         """
         sensors = []
         sn = sensor_name.lower()
@@ -79,7 +85,7 @@ class Station(object):
         return sensors
 
     def get_sensors_measures(self, sensors, sens_date=None):
-        """ 
+        """
         Get all measures a given sensors and optionally at given date.
         """
         mss = []
@@ -89,18 +95,20 @@ class Station(object):
             if not sens_date or fmt_date in m['f_date']:
                 sm = Measure(m['f_date'])
                 for s in sensors:
+                    if s is None: continue
                     for mode in s.get_modes():
-                        sm.add_value(s.get_name(), mode, m[s.get_measure_id(mode)])
+                        if s.get_measure_id(mode) in m:
+                            sm.add_value(s.get_name(), mode, m[s.get_measure_id(mode)])
                 mss.append(sm)
         return mss
 
     def get_sensors_measures_header(self, sensors):
         header = ['Date']
         for s in sensors:
+            if s is None: continue
             for mode in s.get_modes():
                 header.append(s.get_name() + '_' + s.get_measure_id(mode))
         return header
-
 
     def to_csv(self, csv_path, sensors, delimiter=';'):
         with open(csv_path, 'w') as csv_file:
@@ -193,9 +201,8 @@ class Measure(object):
     def add_value(self, sensor, mode, value):
         if sensor not in self.data:
             self.data[sensor] = {}
-        if value:
+        if value is not None and value:
             self.data[sensor][mode] = round(float(value), 2)
-
 
     def get_values(self):
         values = []
