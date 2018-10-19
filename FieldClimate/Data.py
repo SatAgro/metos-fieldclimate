@@ -98,7 +98,7 @@ class Station(object):
                     if s is None: continue
                     for mode in s.get_modes():
                         if s.get_measure_id(mode) in m:
-                            sm.add_value(s, mode, m[s.get_measure_id(mode)])
+                            sm.add_value(s.get_name(), mode, m[s.get_measure_id(mode)])
                 mss.append(sm)
         return mss
 
