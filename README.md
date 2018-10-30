@@ -54,7 +54,8 @@ functionality of the library. To run it just type:
 
 ## License
 
-Krzysztof Stopa, Przemysław Żelazowski - SatAgro Project<br>
+Krzysztof Stopa, Przemysław Żelazowski - SatAgro Sp. z o.o.
 Phillip Marshall - Agrimanagement, Inc.
+Denis Voronin
 
 GNU LESSER GENERAL PUBLIC LICENSE Version 3
