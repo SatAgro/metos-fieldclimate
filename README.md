@@ -1,5 +1,12 @@
 # metos-fieldclimate
 
+## Deprecation warning
+
+Since December 1st, 2018 old FieldClimate API run out of service and is no longer be available. So this library is no longer usable and we encourge you to switch to one of bellow listed options:
+
+* (https://github.com/agrimgt/python-fieldclimate)[https://github.com/agrimgt/python-fieldclimate] (recommended)
+* (https://github.com/SatAgro/fieldclimate)[https://github.com/SatAgro/fieldclimate]
+
 ## Introduction
 
 Python library to work with Metos FieldClimate meteorological stations JSON REST API. See [official documentation](http://www.fieldclimate.com/json_manual/json_manual.htm "Metos FieldClimte API documentation") for more information.
